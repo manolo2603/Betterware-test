@@ -5,10 +5,9 @@ import {
   CardFooter,
   Chip,
   Image,
-  addToast,
 } from "@heroui/react";
 import { useNavigate } from "react-router-dom";
-import { useCartStore } from "../store/cartStore";
+import { useAddToCart } from "../hooks/useAddToCart";
 import { formatPrice } from "../utils/format";
 import type { Product } from "../types/product";
 
@@ -18,16 +17,7 @@ type ProductCardProps = {
 
 export function ProductCard({ product }: ProductCardProps) {
   const navigate = useNavigate();
-  const addItem = useCartStore((state) => state.addItem);
-
-  const handleAddToCart = () => {
-    addItem(product);
-    addToast({
-      title: "Agregado al carrito",
-      description: product.title,
-      color: "success",
-    });
-  };
+  const addToCart = useAddToCart();
 
   return (
     <Card className="h-full" shadow="sm">
@@ -58,7 +48,7 @@ export function ProductCard({ product }: ProductCardProps) {
         >
           Ver detalle
         </Button>
-        <Button color="primary" className="flex-1" onPress={handleAddToCart}>
+        <Button color="primary" className="flex-1" onPress={() => addToCart(product)}>
           Agregar
         </Button>
       </CardFooter>

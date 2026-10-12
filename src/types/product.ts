@@ -15,6 +15,8 @@ export const productSchema = z.object({
 
 export const productsSchema = z.array(productSchema);
 
+export const categoriesSchema = z.array(z.string());
+
 export type Product = z.infer<typeof productSchema>;
 
 export type CartItem = Product & { quantity: number };

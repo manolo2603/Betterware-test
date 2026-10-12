@@ -1,57 +1,17 @@
-import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Chip, Image, addToast } from "@heroui/react";
-import { useProductsStore } from "../store/productsStore";
-import { useCartStore } from "../store/cartStore";
-import { getProductById } from "../api/products";
+import { Button, Chip, Image } from "@heroui/react";
+import { useProductDetail } from "../hooks/useProductDetail";
+import { useAddToCart } from "../hooks/useAddToCart";
 import { Loader } from "../components/Loader";
 import { ErrorState } from "../components/ErrorState";
 import { ArrowLeftIcon } from "../components/icons";
 import { formatPrice } from "../utils/format";
-import type { Product } from "../types/product";
 
 export function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const productId = Number(id);
-
-  const cached = useProductsStore((state) =>
-    state.products.find((product) => product.id === productId)
-  );
-  const addItem = useCartStore((state) => state.addItem);
-
-  const [fetched, setFetched] = useState<Product>();
-  const [failed, setFailed] = useState(false);
-
-  useEffect(() => {
-    if (cached || Number.isNaN(productId)) return;
-
-    let active = true;
-    getProductById(productId)
-      .then((data) => {
-        if (active) setFetched(data);
-      })
-      .catch(() => {
-        if (active) setFailed(true);
-      });
-
-    return () => {
-      active = false;
-    };
-  }, [productId, cached]);
-
-  const product = cached ?? fetched;
-  const hasError = Number.isNaN(productId) || failed;
-
-  const handleAddToCart = () => {
-    if (!product) return;
-    addItem(product);
-    addToast({
-      title: "Agregado al carrito",
-      description: product.title,
-      color: "success",
-    });
-  };
+  const { product, hasError } = useProductDetail(id);
+  const addToCart = useAddToCart();
 
   if (hasError) {
     return (
@@ -102,7 +62,7 @@ export function ProductDetail() {
             color="primary"
             size="lg"
             className="mt-2 w-full sm:w-auto"
-            onPress={handleAddToCart}
+            onPress={() => addToCart(product)}
           >
             Agregar al carrito
           </Button>

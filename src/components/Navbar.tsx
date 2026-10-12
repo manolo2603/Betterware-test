@@ -6,18 +6,18 @@ import {
   NavbarContent,
 } from "@heroui/react";
 import { Link, useNavigate } from "react-router-dom";
-import { useCartStore } from "../store/cartStore";
+import { useCart } from "../hooks/useCart";
 import { CartIcon } from "./icons";
 
 export function Navbar() {
   const navigate = useNavigate();
-  const totalItems = useCartStore((state) => state.totalItems());
+  const { totalItems } = useCart();
 
   return (
     <HeroNavbar maxWidth="xl" isBordered>
       <NavbarBrand>
         <Link to="/" className="text-inherit font-bold">
-          Mini e-commerce
+          Tiendita
         </Link>
       </NavbarBrand>
       <NavbarContent justify="end">

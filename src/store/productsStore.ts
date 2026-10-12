@@ -1,18 +1,21 @@
 import { create } from "zustand";
-import { getProducts } from "../api/products";
+import { getCategories, getProducts } from "../api/products";
 import type { Product } from "../types/product";
 
 type Status = "idle" | "loading" | "success" | "error";
 
 type ProductsState = {
   products: Product[];
+  categories: string[];
   status: Status;
   error: string | null;
   fetchProducts: (force?: boolean) => Promise<void>;
+  fetchCategories: () => Promise<void>;
 };
 
 export const useProductsStore = create<ProductsState>((set, get) => ({
   products: [],
+  categories: [],
   status: "idle",
   error: null,
   fetchProducts: async (force = false) => {
@@ -29,6 +32,15 @@ export const useProductsStore = create<ProductsState>((set, get) => ({
         status: "error",
         error: "No se pudieron cargar los productos",
       });
+    }
+  },
+  fetchCategories: async () => {
+    if (get().categories.length > 0) return;
+    try {
+      const data = await getCategories();
+      set({ categories: data });
+    } catch {
+      set({ categories: [] });
     }
   },
 }));
