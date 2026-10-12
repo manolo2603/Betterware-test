@@ -5,6 +5,7 @@ Mini módulo de e-commerce que permite ver un listado de productos, consultar el
 ## Demo
 
 Desplegado en AWS (S3 + CloudFront): https://dz5jyzia5ohqd.cloudfront.net/
+(Modo movil y web)
 
 ## Tecnologías
 
